@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iPSX2 — PS2 emulator for iPhone and iPad</title>
+<meta name="description" content="iPSX2 is a free, open-source PlayStation 2 emulator for iPhone and iPad with a JIT recompiler for arm64, built on PCSX2 and ARMSX2.">
+<link rel="canonical" href="https://ipsx2.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="iPSX2 — PS2 emulator for iPhone and iPad">
+<meta property="og:description" content="Free, open-source PlayStation 2 emulation on iOS with a JIT recompiler. Built on PCSX2 and ARMSX2.">
+<meta property="og:url" content="https://ipsx2.github.io/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#0b0d12" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "iPSX2",
+  "description": "PlayStation 2 emulator for iPhone and iPad with a JIT recompiler, built on PCSX2 and ARMSX2.",
+  "operatingSystem": "iOS 18, iPadOS 18",
+  "applicationCategory": "GameApplication",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "url": "https://ipsx2.github.io/",
+  "codeRepository": "https://github.com/iPSX2/iPSX2",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<style>
+  :root {
+    --bg: #f6f7fb;
+    --surface: #ffffff;
+    --surface-2: #eef0f6;
+    --text: #12141a;
+    --muted: #555b6b;
+    --border: #dde1ea;
+    --accent: #2f5bea;
+    --accent-ink: #ffffff;
+    --accent-soft: #e4eafd;
+    --code-bg: #eef0f6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0b0d12;
+      --surface: #13161d;
+      --surface-2: #1a1e27;
+      --text: #e9ebf1;
+      --muted: #9aa1b2;
+      --border: #262b36;
+      --accent: #7c9cff;
+      --accent-ink: #0b0d12;
+      --accent-soft: #1b2340;
+      --code-bg: #1a1e27;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+
+  header.top {
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  header.top .wrap {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px; gap: 16px;
+  }
+  .brand { font-weight: 700; font-size: 18px; letter-spacing: -0.01em; color: var(--text); text-decoration: none; }
+  .brand span { color: var(--accent); }
+  nav.links { display: flex; gap: 18px; font-size: 15px; }
+  nav.links a { color: var(--muted); text-decoration: none; }
+  nav.links a:hover { color: var(--text); }
+
+  .hero { padding: 64px 0 48px; }
+  .hero h1 {
+    font-size: clamp(32px, 6vw, 52px); line-height: 1.08; letter-spacing: -0.025em;
+    margin: 0 0 16px; max-width: 14ch;
+  }
+  .hero p.lead { font-size: 19px; color: var(--muted); max-width: 58ch; margin: 0 0 28px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 18px; border-radius: 10px; font-weight: 600; font-size: 15px;
+    text-decoration: none; border: 1px solid var(--border); color: var(--text); background: var(--surface);
+  }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .btn:hover { filter: brightness(1.05); }
+  .note { font-size: 14px; color: var(--muted); margin-top: 16px; }
+
+  section { padding: 40px 0; border-top: 1px solid var(--border); }
+  section h2 { font-size: 26px; letter-spacing: -0.015em; margin: 0 0 8px; }
+  section p.sub { color: var(--muted); margin: 0 0 24px; max-width: 62ch; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 18px 16px;
+  }
+  .card h3 { font-size: 16px; margin: 0 0 6px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+
+  ol.steps { margin: 0; padding-left: 0; list-style: none; counter-reset: step; display: grid; gap: 12px; }
+  ol.steps li {
+    counter-increment: step; background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px 18px 16px 58px; position: relative;
+  }
+  ol.steps li::before {
+    content: counter(step); position: absolute; left: 18px; top: 16px;
+    width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
+    font-weight: 700; font-size: 14px; display: grid; place-items: center;
+  }
+  ol.steps li strong { display: block; margin-bottom: 2px; }
+  ol.steps li span { color: var(--muted); font-size: 15px; }
+
+  ul.req { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92em;
+    background: var(--code-bg); padding: 1px 6px; border-radius: 6px;
+  }
+  pre {
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 16px; overflow-x: auto; font-size: 14px; line-height: 1.5;
+  }
+  pre code { background: none; padding: 0; }
+
+  ul.credits { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+  footer { padding: 32px 0 48px; border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; }
+  footer p { margin: 0 0 8px; }
+
+  @media (max-width: 560px) {
+    nav.links { gap: 14px; font-size: 14px; }
+    nav.links a.hide-sm { display: none; }
+    .hero { padding: 44px 0 36px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="./">iPSX<span>2</span></a>
+    <nav class="links" aria-label="Main">
+      <a href="#features" class="hide-sm">Features</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/iPSX2/iPSX2/releases">Releases</a>
+      <a href="https://github.com/iPSX2/iPSX2">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <h1>PlayStation&nbsp;2 games on iPhone and iPad</h1>
+    <p class="lead">iPSX2 is a free, open-source PS2 emulator for iOS. It runs games with a JIT recompiler for arm64 and renders with Metal. It is built on PCSX2 and ARMSX2.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/iPSX2/iPSX2/releases">Download</a>
+      <a class="btn" href="https://github.com/iPSX2/iPSX2">Source code</a>
+    </div>
+    <p class="note">iPSX2 does not include a PS2 BIOS or any games. Dump them from hardware you own.</p>
+  </div>
+
+  <section id="features">
+    <div class="wrap">
+      <h2>What it does</h2>
+      <p class="sub">A full PS2 core with a touch-first frontend built for iPhone and iPad.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>JIT recompiler</h3>
+          <p>The EE, IOP and VU recompilers generate arm64 code at runtime. JIT is enabled through StikDebug.</p>
+        </div>
+        <div class="card">
+          <h3>Metal renderer</h3>
+          <p>Hardware rendering with upscaling up to 8×, texture filtering, FXAA and CAS sharpening.</p>
+        </div>
+        <div class="card">
+          <h3>Per-game tweaks</h3>
+          <p>Override settings for a single game, and turn built-in patches and cheat codes on or off per game.</p>
+        </div>
+        <div class="card">
+          <h3>Game library</h3>
+          <p>Folders, cover art, custom titles and play time for your collection.</p>
+        </div>
+        <div class="card">
+          <h3>Touch and controllers</h3>
+          <p>A virtual pad with a drag-to-edit layout, plus MFi and other Bluetooth controllers.</p>
+        </div>
+        <div class="card">
+          <h3>Speed control</h3>
+          <p>Fast-forward, slow motion, frame advance, and performance options such as MTVU and EE cycle skip.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="requirements">
+    <div class="wrap">
+      <h2>Requirements</h2>
+      <ul class="req">
+        <li>An iPhone or iPad with an arm64 chip, running iOS 18 or newer (tested on iOS 18 and iOS 26).</li>
+        <li>A way to sideload apps. A free Apple developer account works.</li>
+        <li><a href="https://github.com/StephenDev0/StikDebug">StikDebug</a> to enable JIT. Without JIT, iPSX2 falls back to the interpreter, which is too slow for most games.</li>
+        <li>A PS2 BIOS dump.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap">
+      <h2>Install</h2>
+      <p class="sub">Releases are unsigned <code>.ipa</code> files that you sign when you install them.</p>
+      <ol class="steps">
+        <li><strong>Download the latest release</strong><span>Get the <code>.ipa</code> from the <a href="https://github.com/iPSX2/iPSX2/releases">Releases</a> page.</span></li>
+        <li><strong>Sign and install it</strong><span>Use Sideloadly, AltStore, SideStore, plumesign or a similar tool.</span></li>
+        <li><strong>Add your BIOS and games</strong><span>Open iPSX2 once so its folder is created, then copy files in with the Files app or the in-app importer.</span></li>
+        <li><strong>Enable JIT and play</strong><span>Launch iPSX2 from StikDebug with the <strong>legacy</strong> script, then start a game.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="build">
+    <div class="wrap">
+      <h2>Build it yourself</h2>
+      <p class="sub">The simplest route is GitHub Actions: fork the repository, run <strong>Build Unsigned IPA</strong> from the Actions tab, and download the artifact. On a Mac:</p>
+<pre><code>cmake -S cpp -B build-device -G Xcode \
+  -DCMAKE_SYSTEM_NAME=iOS -DiPSX2_REAL_DEVICE=ON
+xcodebuild -project build-device/iPSX2.xcodeproj \
+  -scheme iPSX2 -sdk iphoneos -configuration Release \
+  CODE_SIGNING_ALLOWED=NO archive</code></pre>
+    </div>
+  </section>
+
+  <section id="credits">
+    <div class="wrap">
+      <h2>Credits</h2>
+      <ul class="credits">
+        <li><a href="https://github.com/PCSX2/pcsx2">PCSX2</a>, the emulator this is built on</li>
+        <li><a href="https://github.com/ARMSX2/ARMSX2">ARMSX2</a>, for the arm64 port</li>
+        <li><a href="https://github.com/Thiago-Heleno/iPSX2-src">Thiago-Heleno</a>, for the original iOS port with JIT</li>
+        <li><a href="https://github.com/otti83">otti83</a>, for their <a href="https://github.com/otti83/iPSX2">iPSX2</a> frontend features</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>iPSX2 is free software under the <a href="https://github.com/iPSX2/iPSX2/blob/main/COPYING.GPLv3">GPL-3.0-or-later</a> license.</p>
+    <p>PlayStation and PS2 are trademarks of Sony Interactive Entertainment. This project is not affiliated with or endorsed by Sony.</p>
+  </div>
+</footer>
+
+</body>
+</html>
